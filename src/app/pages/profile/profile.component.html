@@ -1,0 +1,118 @@
+<div class="container py-5">
+  <div class="card mb-4">
+    <div class="card-body">
+      <h3 class="card-title mb-3">Kullanıcı Profili</h3>
+      <div *ngIf="user">
+        <p><strong>Kullanıcı Adı:</strong> {{ userName }}</p>
+        <p><strong>E-posta:</strong> {{ user.email }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <h4 class="card-title mb-3">Benim Tariflerim</h4>
+      <div *ngIf="myRecipes$ | async as myRecipes">
+        <div *ngIf="myRecipes.length; else noMyRecipe">
+          <div *ngFor="let recipe of myRecipes" class="card mb-3">
+            <div class="card-body">
+              <div class="row align-items-center">
+                <div class="col-md-8">
+                  <h5 class="card-title">{{ recipe.title }}</h5>
+                  <p class="card-text">{{ recipe.description }}</p>
+                  <p class="card-text">
+                    <strong>Malzemeler:</strong>
+                    <span *ngFor="let ing of recipe.ingredients; let last = last">
+                      {{ ing }}<span *ngIf="!last">, </span>
+                    </span>
+                  </p>
+                  <div class="mt-4 d-flex align-items-center gap-2" *ngIf="isOwnProfile">
+                    <button class="btn btn-outline-primary btn-sm d-flex align-items-center" (click)="openEditModal(recipe)">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+                        <path d="M12.146.854a.5.5 0 0 1 .708 0l2.292 2.292a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 3 10.707V13h2.293l7.5-7.5z"/>
+                      </svg>
+                      <span class="ms-1">Düzenle</span>
+                    </button>
+                    <button class="btn btn-outline-danger btn-sm d-flex align-items-center" (click)="openDeleteModal(recipe)">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5.5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6zm3 .5a.5.5 0 0 1 .5-.5.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6z"/>
+                        <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1 0-2h3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V4h11V3a.5.5 0 0 0-.5-.5h-10a.5.5 0 0 0-.5.5z"/>
+                      </svg>
+                      <span class="ms-1">Sil</span>
+                    </button>
+                  </div>
+                </div>
+                <div class="col-md-4 text-end">
+                  <div *ngIf="recipe.imageUrl">
+                    <img [src]="recipe.imageUrl" alt="Tarif Fotoğrafı" class="img-fluid rounded ms-3" style="max-height:150px; max-width:100%;">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <ng-template #noMyRecipe>
+          <div class="alert alert-info">Henüz hiç tarif eklemediniz.</div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Düzenleme Modalı -->
+<div class="modal fade show" tabindex="-1" [ngStyle]="{display: showEditModal ? 'block' : 'none', background: 'rgba(0,0,0,0.5)'}" *ngIf="showEditModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Tarifi Düzenle</h5>
+        <button type="button" class="btn-close" aria-label="Kapat" (click)="closeEditModal()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
+            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form *ngIf="editForm" [formGroup]="editForm" (ngSubmit)="saveEdit()">
+          <div class="mb-3">
+            <label for="editTitle" class="form-label">Başlık</label>
+            <input id="editTitle" type="text" class="form-control" formControlName="title">
+          </div>
+          <div class="mb-3">
+            <label for="editDescription" class="form-label">Açıklama</label>
+            <textarea id="editDescription" class="form-control" formControlName="description" rows="3"></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="editIngredients" class="form-label">Malzemeler</label>
+            <input id="editIngredients" type="text" class="form-control" formControlName="ingredients">
+          </div>
+          <div class="mb-3">
+            <label for="editImage" class="form-label">Tarif Fotoğrafı</label>
+            <input id="editImage" type="file" class="form-control" (change)="onEditFileSelected($event)" accept="image/*">
+            <div *ngIf="editingRecipe?.imageUrl" class="mt-2">
+              <img [src]="editingRecipe.imageUrl" alt="Mevcut Fotoğraf" class="img-fluid rounded" style="max-height:120px;">
+            </div>
+          </div>
+          <button class="btn btn-primary w-100" type="submit" [disabled]="editForm.invalid">Kaydet</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Silme Onay Modalı -->
+<div class="modal fade show" tabindex="-1" [ngStyle]="{display: showDeleteModal ? 'block' : 'none', background: 'rgba(0,0,0,0.5)'}" *ngIf="showDeleteModal">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Tarifi Sil</h5>
+      </div>
+      <div class="modal-body">
+        <p>Bu tarifi silmek istediğinize emin misiniz?</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="closeDeleteModal()">İptal</button>
+        <button class="btn btn-danger" (click)="confirmDelete()">Sil</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,43 @@
+.interaction-buttons {
+  .btn {
+    transition: all 0.2s ease;
+    
+    &:hover {
+      transform: scale(1.05);
+    }
+    
+    &.active {
+      background-color: var(--bs-primary);
+      color: white;
+      
+      &.btn-outline-danger {
+        background-color: var(--bs-danger);
+      }
+    }
+  }
+}
+
+.comment-item {
+  padding: 10px;
+  border-radius: 4px;
+  background-color: #f8f9fa;
+  
+  &:hover {
+    background-color: #e9ecef;
+  }
+}
+
+.modal {
+  .modal-content {
+    border-radius: 8px;
+  }
+  
+  .modal-header {
+    border-bottom: 1px solid #dee2e6;
+  }
+  
+  .modal-body {
+    max-height: 70vh;
+    overflow-y: auto;
+  }
+}

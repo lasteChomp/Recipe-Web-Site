@@ -1,0 +1,182 @@
+<div class="container d-flex align-items-center justify-content-center min-vh-100">
+  <div class="card p-4 shadow" style="min-width: 350px; max-width: 500px; width: 100%;">
+    <h2 class="mb-4 text-center">Tarif Ekle</h2>
+    <form [formGroup]="recipeForm" (ngSubmit)="onSubmit()">
+      <div class="mb-3">
+        <label for="title" class="form-label">Başlık</label>
+        <input id="title" type="text" class="form-control" formControlName="title" placeholder="Tarif başlığı">
+      </div>
+      <div class="mb-3">
+        <label for="description" class="form-label">Açıklama</label>
+        <textarea id="description" class="form-control" formControlName="description" placeholder="Tarif açıklaması" rows="3"></textarea>
+      </div>
+      <div class="mb-3">
+        <label for="ingredients" class="form-label">Malzemeler</label>
+        <input id="ingredients" type="text" class="form-control" formControlName="ingredients" placeholder="Malzemeleri virgülle ayırarak yazın (ör: un, şeker, yumurta)">
+      </div>
+      <div class="mb-3">
+        <label for="image" class="form-label">Tarif Fotoğrafı</label>
+        <input id="image" type="file" class="form-control" (change)="onFileSelected($event)" accept="image/*">
+      </div>
+      <button class="btn btn-success w-100" type="submit" [disabled]="recipeForm.invalid">Tarif Ekle</button>
+      <div *ngIf="success" class="alert alert-success mt-3">{{ success }}</div>
+      <div *ngIf="error" class="alert alert-danger mt-3">{{ error }}</div>
+    </form>
+  </div>
+</div>
+
+<div class="container mt-5">
+  <h3 class="mb-4">Eklenen Tarifler</h3>
+  <div *ngIf="(recipesWithUser$ | async) as recipes">
+    <div *ngIf="recipes.length; else noRecipe">
+      <div *ngFor="let recipe of recipes" class="card mb-3">
+        <div class="card-body">
+          <div class="row align-items-center">
+            <div class="col-md-8 d-flex flex-column h-100">
+              <h5 class="card-title">{{ recipe.title }}</h5>
+              <p class="card-text">{{ recipe.description }}</p>
+              <p class="card-text">
+                <strong>Malzemeler:</strong>
+                <span *ngFor="let ing of recipe.ingredients; let last = last">
+                  {{ ing }}<span *ngIf="!last">, </span>
+                </span>
+              </p>
+              <p class="card-text mt-2">
+                <strong>Ekleyen:</strong>
+                {{ recipe.userName || '-' }}
+              </p>
+              <div class="d-flex align-items-center gap-2 mt-3">
+                <div class="interaction-buttons me-3">
+                  <button class="btn btn-outline-primary btn-sm me-2" (click)="toggleLike(recipe)">
+                    <i class="bi bi-hand-thumbs-up"></i>
+                    <span class="ms-1">{{ recipe.likesCount }}</span>
+                  </button>
+                  <button class="btn btn-outline-danger btn-sm me-2" (click)="toggleDislike(recipe)">
+                    <i class="bi bi-hand-thumbs-down"></i>
+                    <span class="ms-1">{{ recipe.dislikesCount }}</span>
+                  </button>
+                  <button class="btn btn-outline-secondary btn-sm" (click)="openCommentModal(recipe)">
+                    <i class="bi bi-chat"></i>
+                    <span class="ms-1">{{ recipe.commentsCount }}</span>
+                  </button>
+                </div>
+                <div *ngIf="currentUserId === recipe.createdBy" class="d-flex align-items-center gap-2">
+                  <button class="btn btn-outline-primary btn-sm d-flex align-items-center" (click)="openEditModal(recipe)">
+                    <i class="bi bi-pencil"></i>
+                    <span class="ms-1">Düzenle</span>
+                  </button>
+                  <button class="btn btn-outline-danger btn-sm d-flex align-items-center" (click)="openDeleteModal(recipe)">
+                    <i class="bi bi-trash"></i>
+                    <span class="ms-1">Sil</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 text-end d-flex align-items-center justify-content-end h-100">
+              <div *ngIf="recipe.imageUrl" class="w-100">
+                <img [src]="recipe.imageUrl" alt="Tarif Fotoğrafı" class="img-fluid rounded" style="max-height:200px; max-width:100%;">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ng-template #noRecipe>
+      <div class="alert alert-info">Henüz hiç tarif eklenmemiş.</div>
+    </ng-template>
+  </div>
+</div>
+
+<!-- Düzenleme Modalı -->
+<div class="modal fade show" tabindex="-1" [ngStyle]="{display: showEditModal ? 'block' : 'none', background: 'rgba(0,0,0,0.5)'}" *ngIf="showEditModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Tarifi Düzenle</h5>
+        <button type="button" class="btn-close" aria-label="Kapat" (click)="closeEditModal()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
+            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form *ngIf="editForm" [formGroup]="editForm" (ngSubmit)="saveEdit()">
+          <div class="mb-3">
+            <label for="editTitle" class="form-label">Başlık</label>
+            <input id="editTitle" type="text" class="form-control" formControlName="title">
+          </div>
+          <div class="mb-3">
+            <label for="editDescription" class="form-label">Açıklama</label>
+            <textarea id="editDescription" class="form-control" formControlName="description" rows="3"></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="editIngredients" class="form-label">Malzemeler</label>
+            <input id="editIngredients" type="text" class="form-control" formControlName="ingredients">
+          </div>
+          <div class="mb-3">
+            <label for="editImage" class="form-label">Tarif Fotoğrafı</label>
+            <input id="editImage" type="file" class="form-control" (change)="onEditFileSelected($event)" accept="image/*">
+            <img *ngIf="editingRecipe?.imageUrl" [src]="editingRecipe?.imageUrl || ''" alt="Mevcut Fotoğraf" class="img-fluid rounded mt-2" style="max-height:120px;">
+          </div>
+          <button class="btn btn-primary w-100" type="submit" [disabled]="editForm.invalid">Kaydet</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Silme Onay Modalı -->
+<div class="modal fade show" tabindex="-1" [ngStyle]="{display: showDeleteModal ? 'block' : 'none', background: 'rgba(0,0,0,0.5)'}" *ngIf="showDeleteModal">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Tarifi Sil</h5>
+      </div>
+      <div class="modal-body">
+        <p>Bu tarifi silmek istediğinize emin misiniz?</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="closeDeleteModal()">İptal</button>
+        <button class="btn btn-danger" (click)="confirmDelete()">Sil</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Comment Modal -->
+<div class="modal fade show" tabindex="-1" [ngStyle]="{display: showCommentModal ? 'block' : 'none', background: 'rgba(0,0,0,0.5)'}" *ngIf="showCommentModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Yorumlar</h5>
+        <button type="button" class="btn-close" aria-label="Kapat" (click)="closeCommentModal()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
+            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="commentForm" (ngSubmit)="submitComment()" class="mb-4">
+          <div class="mb-3">
+            <textarea class="form-control" formControlName="content" rows="3" maxlength="100" placeholder="Yorumunuzu yazın..." required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary" [disabled]="commentForm.invalid">Yorum Yap</button>
+        </form>
+        <div class="comments-list">
+          <div *ngIf="comments$ | async as comments">
+            <div *ngIf="comments.length === 0" class="text-muted">
+              Henüz yorum yapılmamış.
+            </div>
+            <div *ngFor="let comment of comments | orderByDate:'createdAt':'desc'" class="comment-item mb-3">
+              <div class="d-flex justify-content-between">
+                <strong>{{ comment.userName }}</strong>
+                <small class="text-muted">{{ comment.createdAt?.toDate ? (comment.createdAt.toDate() | date:'short') : (comment.createdAt | date:'short') }}</small>
+              </div>
+              <p class="mb-0">{{ comment.content }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

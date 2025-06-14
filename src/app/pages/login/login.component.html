@@ -1,0 +1,20 @@
+<div class="container d-flex align-items-center justify-content-center min-vh-100">
+  <div class="card p-4 shadow" style="min-width: 350px; max-width: 400px; width: 100%;">
+    <h2 class="mb-4 text-center">Giriş Yap</h2>
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <div class="mb-3">
+        <label for="email" class="form-label">E-posta</label>
+        <input id="email" type="email" class="form-control" formControlName="email" placeholder="E-posta adresinizi girin">
+      </div>
+      <div class="mb-3">
+        <label for="password" class="form-label">Şifre</label>
+        <input id="password" type="password" class="form-control" formControlName="password" placeholder="Şifrenizi girin">
+      </div>
+      <button class="btn btn-primary w-100" type="submit" [disabled]="loginForm.invalid">Giriş Yap</button>
+      <div *ngIf="error" class="alert alert-danger mt-3">{{ error }}</div>
+    </form>
+    <div class="text-center mt-3">
+      <a routerLink="/register">Hesabınız yok mu? Kayıt olun</a>
+    </div>
+  </div>
+</div>
