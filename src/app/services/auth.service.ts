@@ -25,13 +25,13 @@ export class AuthService {
     }
   }
 
-  async register(email: string, password: string, name: string) {
+  async register(email: string, password: string, username: string) {
     try {
       const result = await createUserWithEmailAndPassword(this.auth, email, password);
       // Store additional user data in Firestore
       const userDoc = doc(this.firestore, 'users', result.user.uid);
       await setDoc(userDoc, {
-        name,
+        username,
         email,
         createdAt: new Date()
       });
