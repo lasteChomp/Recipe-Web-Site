@@ -109,7 +109,7 @@ export class HomeComponent implements OnInit {
       try {
         const userDoc = doc(this.firestore, 'users', user.uid);
         const userSnap = await getDoc(userDoc);
-        const userName = userSnap.exists() ? userSnap.data()['name'] || '-' : '-';
+        const userName = userSnap.exists() ? userSnap.data()['username'] || '-' : '-';
 
         await addDoc(collection(this.firestore, 'recipes'), {
           title,
