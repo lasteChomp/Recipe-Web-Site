@@ -1,59 +1,116 @@
-# YemekTarifiPlatformu
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.1.8.
+# 🍲 Recipe Sharing Platform
 
-## Development server
+Welcome to the **Recipe Sharing Web App**, a modern and user-friendly platform where users can share their favorite recipes, explore others’ dishes, and get inspired to cook delicious meals. Built using Angular and Firebase, this project is ideal for learning full-stack development and deploying production-ready web applications.
 
-To start a local development server, run:
+🌐 **Live Demo:** [Click to Visit](https://recipe-f3ccb.web.app)
 
-```bash
-ng serve
-```
+---
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## 🚀 Features
 
-## Code scaffolding
+- 🔐 **Authentication System** (Firebase Auth)
+  - User registration & login with email and password
+- 📤 **Add Recipes**
+  - Upload a recipe with a title, description, ingredients, and steps
+- 🖼️ **Upload Images**
+  - Include a photo for each recipe
+- 🔍 **Category Filtering**
+  - Browse recipes by categories like Soups, Desserts, Main Dishes, etc.
+- ❤️ **Like and Favorite Recipes**
+  - Mark your favorite recipes to view later
+- 💬 **Comment System**
+  - Users can comment on each recipe (coming soon)
+- 🌙 **Dark/Light Mode Support**
+- 🧑‍🍳 **User Profile Page**
+  - See and manage your own shared recipes
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+---
 
-```bash
-ng generate component component-name
-```
+## 🛠️ Tech Stack
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+- **Frontend:** Angular 16, TypeScript, RxJS, SCSS
+- **Backend/Database:** Firebase Firestore
+- **Authentication:** Firebase Authentication
+- **Hosting:** Firebase Hosting
+- **Media Storage:** Firebase Storage
 
-```bash
-ng generate --help
-```
+---
 
-## Building
+## 📸 Screenshots
 
-To build the project run:
+### 🔐 Register
+![Login Screen](images/kayit_olma.png)
 
-```bash
-ng build
-```
+### 🔐 Login
+![Login Screen](images/giris_yapma.png)
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+### 📝 Add Recipe
+![Add Recipe](images/tarif_ekleme.png)
 
-## Running unit tests
+### 🍽️ Recipe List
+![Recipes](images/tarif_listesi.png)
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+### 🏠 Comment Section
+![Home Page](images/yorumlar.png)
 
-```bash
-ng test
-```
+### 🙍 User Profile
+![Profile](images/profil.png)
 
-## Running end-to-end tests
+---
 
-For end-to-end (e2e) testing, run:
+## ⚙️ Installation
 
-```bash
-ng e2e
-```
+To run this project locally:
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/your-username/recipe-sharing-app.git
+   cd recipe-sharing-app
+   ```
 
-## Additional Resources
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+3. **Set up Firebase:**
+   - Create a Firebase project at [Firebase Console](https://console.firebase.google.com/)
+   - Enable Email/Password authentication
+   - Create Firestore and Storage rules
+   - Replace `environment.ts` and `environment.prod.ts` with your Firebase config
+
+4. **Run the app locally:**
+   ```bash
+   ng serve
+   ```
+
+---
+
+## 👤 Test Account
+
+You can use the following test credentials to log in and explore the application:
+
+- **Email:** `test@gmail.com`  
+- **Password:** `test1234`
+
+---
+
+## ✨ Future Improvements
+
+- Real-time comment and rating system
+- Advanced search and filtering
+- Admin dashboard for recipe moderation
+- Internationalization (multi-language support)
+
+---
+
+## 👨‍💻 Developer
+
+**Developed by:** Enes Yıldırım  
+**University:** Atatürk University, Faculty of Applied Sciences, Information Systems and Technologies  
+**Course:** Internet-Based Programming Final Project
+
+---
+
+Thank you for checking out this project! ⭐ Feel free to contribute or leave feedback.
